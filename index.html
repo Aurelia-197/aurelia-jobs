@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta name="google-site-verification" content="k-bOFnhL7ZFaxPrNqCShCBmWqkPesoyAPaotvnsPDwk" />
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -35,30 +36,30 @@
       z-index: 10;
     }
 
-    .header-inner {
+   .header-inner {
       max-width: 1100px;
       margin: auto;
     }
 
-    .logo {
+   .logo {
       font-size: 27px;
       font-weight: 800;
       color: #111827;
       margin-bottom: 5px;
     }
 
-    .tagline {
+   .tagline {
       color: #6b7280;
       font-size: 14px;
     }
 
-    .search-area {
+   .search-area {
       max-width: 1100px;
       margin: 22px auto;
       padding: 0 16px;
     }
 
-    .search-box {
+   .search-box {
       width: 100%;
       padding: 15px 17px;
       border: 1px solid #d1d5db;
@@ -68,11 +69,11 @@
       background: white;
     }
 
-    .search-box:focus {
+   .search-box:focus {
       border-color: #2563eb;
     }
 
-    .top-bar {
+   .top-bar {
       max-width: 1100px;
       margin: 0 auto 15px;
       padding: 0 16px;
@@ -82,12 +83,12 @@
       gap: 10px;
     }
 
-    .job-count {
+   .job-count {
       font-size: 14px;
       color: #6b7280;
     }
 
-    .refresh-btn {
+   .refresh-btn {
       border: 0;
       background: #111827;
       color: white;
@@ -97,7 +98,7 @@
       font-size: 13px;
     }
 
-    .refresh-btn:hover {
+   .refresh-btn:hover {
       background: #000000;
     }
 
@@ -107,12 +108,12 @@
       padding: 0 16px 40px;
     }
 
-    .jobs {
+   .jobs {
       display: grid;
       gap: 16px;
     }
 
-    .job-card {
+   .job-card {
       background: white;
       border: 1px solid #e5e7eb;
       border-radius: 12px;
@@ -120,26 +121,26 @@
       box-shadow: 0 2px 7px rgba(0,0,0,0.04);
     }
 
-    .job-title {
+   .job-title {
       margin: 0 0 8px;
       font-size: 21px;
       color: #111827;
     }
 
-    .company {
+   .company {
       font-weight: 600;
       color: #374151;
       margin-bottom: 10px;
     }
 
-    .job-info {
+   .job-info {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       margin: 10px 0 15px;
     }
 
-    .info {
+   .info {
       background: #f3f4f6;
       color: #374151;
       padding: 6px 9px;
@@ -147,7 +148,7 @@
       font-size: 13px;
     }
 
-    .salary {
+   .salary {
       color: #047857;
       font-weight: 700;
       background: #ecfdf5;
@@ -156,23 +157,23 @@
       font-size: 13px;
     }
 
-    .section-title {
+   .section-title {
       font-size: 14px;
       font-weight: 700;
       margin: 16px 0 7px;
       color: #111827;
     }
 
-    .description,
-    .requirements,
-    .benefits {
+   .description,
+   .requirements,
+   .benefits {
       color: #4b5563;
       line-height: 1.6;
       font-size: 14px;
       white-space: pre-line;
     }
 
-    .apply-btn {
+   .apply-btn {
       display: inline-block;
       margin-top: 18px;
       width: 100%;
@@ -186,24 +187,24 @@
       cursor: pointer;
     }
 
-    .apply-btn:hover {
+   .apply-btn:hover {
       background: #15803d;
     }
 
-    .apply-btn.disabled {
+   .apply-btn.disabled {
       background: #9ca3af;
       cursor: not-allowed;
     }
 
-    .date {
+   .date {
       margin-top: 12px;
       color: #9ca3af;
       font-size: 12px;
     }
 
-    .loading,
-    .empty,
-    .error {
+   .loading,
+   .empty,
+   .error {
       background: white;
       border: 1px solid #e5e7eb;
       border-radius: 12px;
@@ -212,7 +213,7 @@
       color: #6b7280;
     }
 
-    .error {
+   .error {
       color: #b91c1c;
       background: #fef2f2;
     }
@@ -228,11 +229,11 @@
     }
 
     @media (min-width: 700px) {
-      .jobs {
+     .jobs {
         grid-template-columns: repeat(2, 1fr);
       }
 
-      .apply-btn {
+     .apply-btn {
         width: auto;
         min-width: 180px;
       }
@@ -284,480 +285,136 @@
 </footer>
 
 <script>
-  /* =========================================
-     SUPABASE CONFIGURATION
-     ========================================= */
-
-  const SUPABASE_URL =
-    "https://oeugfykyaookmjdvszzz.supabase.co";
-
-  const SUPABASE_KEY =
-    "sb_publishable_VetH8VzU8BMEkh0dZMjqWQ_uX-0AWzb";
-
-
-  /* =========================================
-     GLOBAL DATA
-     ========================================= */
+  const SUPABASE_URL = "https://oeugfykyaookmjdvszzz.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_VetH8VzU8BMEkh0dZMjqWQ_uX-0AWzb";
 
   let allJobs = [];
   let filteredJobs = [];
 
-
-  /* =========================================
-     HTML SECURITY
-     ========================================= */
-
   function escapeHTML(value) {
-    if (value === null || value === undefined) {
-      return "";
-    }
-
-    return String(value)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+    if (value === null || value === undefined) return "";
+    return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
   }
-
-
-  /* =========================================
-     DATE FORMAT
-     ========================================= */
 
   function formatDate(dateValue) {
-
-    if (!dateValue) {
-      return "";
-    }
-
+    if (!dateValue) return "";
     const date = new Date(dateValue);
-
-    if (isNaN(date.getTime())) {
-      return "";
-    }
-
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric"
-    });
+    if (isNaN(date.getTime())) return "";
+    return date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
   }
-
-
-  /* =========================================
-     VALIDATE APPLICATION URL
-     ========================================= */
 
   function getApplyUrl(job) {
-
-    const url =
-      job.apply_url ||
-      job.apply_link ||
-      "";
-
-    if (!url) {
-      return "";
-    }
-
+    const url = job.apply_url || job.apply_link || "";
+    if (!url) return "";
     try {
       const parsed = new URL(url);
-
-      if (
-        parsed.protocol === "http:" ||
-        parsed.protocol === "https:"
-      ) {
-        return parsed.href;
-      }
-
+      if (parsed.protocol === "http:" || parsed.protocol === "https:") return parsed.href;
       return "";
-
     } catch (error) {
       return "";
     }
   }
-
-
-  /* =========================================
-     LOAD JOBS FROM SUPABASE
-     ========================================= */
 
   async function loadJobs() {
-
-    const container =
-      document.getElementById("jobsContainer");
-
-    const count =
-      document.getElementById("jobCount");
-
-    container.innerHTML = `
-      <div class="loading">
-        Loading jobs...
-      </div>
-    `;
-
+    const container = document.getElementById("jobsContainer");
+    const count = document.getElementById("jobCount");
+    container.innerHTML = `<div class="loading">Loading jobs...</div>`;
     count.textContent = "Loading jobs...";
-
     try {
-
-      const response = await fetch(
-        SUPABASE_URL +
-        "/rest/v1/jobs?select=*&order=created_at.desc",
-        {
-          method: "GET",
-
-          headers: {
-            "apikey": SUPABASE_KEY,
-            "Authorization": "Bearer " + SUPABASE_KEY
-          }
-        }
-      );
-
+      const response = await fetch(SUPABASE_URL + "/rest/v1/jobs?select=*&order=created_at.desc", {
+        method: "GET",
+        headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
+      });
       if (!response.ok) {
-
         const errorText = await response.text();
-
-        console.error(
-          "Supabase error:",
-          errorText
-        );
-
-        throw new Error(
-          "Unable to load jobs."
-        );
+        console.error("Supabase error:", errorText);
+        throw new Error("Unable to load jobs.");
       }
-
       const data = await response.json();
-
-      allJobs = Array.isArray(data)
-        ? data
-        : [];
-
+      allJobs = Array.isArray(data)? data : [];
       filteredJobs = [...allJobs];
-
       renderJobs();
-
     } catch (error) {
-
       console.error(error);
-
       count.textContent = "Unable to load jobs";
-
-      container.innerHTML = `
-        <div class="error">
-          <strong>Unable to load jobs.</strong>
-          <br><br>
-          Please refresh the page and try again.
-        </div>
-      `;
+      container.innerHTML = `<div class="error"><strong>Unable to load jobs.</strong><br><br>Please refresh the page and try again.</div>`;
     }
   }
 
-
-  /* =========================================
-     RENDER JOBS
-     ========================================= */
-
   function renderJobs() {
-
-    const container =
-      document.getElementById("jobsContainer");
-
-    const count =
-      document.getElementById("jobCount");
-
-    count.textContent =
-      filteredJobs.length +
-      (filteredJobs.length === 1
-        ? " job"
-        : " jobs");
-
+    const container = document.getElementById("jobsContainer");
+    const count = document.getElementById("jobCount");
+    count.textContent = filteredJobs.length + (filteredJobs.length === 1? " job" : " jobs");
     if (filteredJobs.length === 0) {
-
-      container.innerHTML = `
-        <div class="empty">
-          No jobs found.
-        </div>
-      `;
-
+      container.innerHTML = `<div class="empty">No jobs found.</div>`;
       return;
     }
-
-    container.innerHTML =
-      filteredJobs.map(function(job, index) {
-
-        const title =
-          job.title ||
-          "Untitled Job";
-
-        const company =
-          job.company ||
-          "Company not specified";
-
-        const location =
-          job.location ||
-          "Remote";
-
-        const salary =
-          job.salary ||
-          "Not specified";
-
-        const workType =
-          job.work_type ||
-          "Remote";
-
-        const description =
-          job.description ||
-          "No description available.";
-
-        const requirements =
-          job.requirements ||
-          "";
-
-        const benefits =
-          job.benefits ||
-          "";
-
-        const applyUrl =
-          getApplyUrl(job);
-
-        return `
+    container.innerHTML = filteredJobs.map(function(job, index) {
+      const title = job.title || "Untitled Job";
+      const company = job.company || "Company not specified";
+      const location = job.location || "Remote";
+      const salary = job.salary || "Not specified";
+      const workType = job.work_type || "Remote";
+      const description = job.description || "No description available.";
+      const requirements = job.requirements || "";
+      const benefits = job.benefits || "";
+      const applyUrl = getApplyUrl(job);
+      return `
           <article class="job-card">
-
-            <h2 class="job-title">
-              ${escapeHTML(title)}
-            </h2>
-
-            <div class="company">
-              🏢 ${escapeHTML(company)}
-            </div>
-
+            <h2 class="job-title">${escapeHTML(title)}</h2>
+            <div class="company">🏢 ${escapeHTML(company)}</div>
             <div class="job-info">
-
-              <span class="info">
-                📍 ${escapeHTML(location)}
-              </span>
-
-              <span class="info">
-                💼 ${escapeHTML(workType)}
-              </span>
-
-              <span class="salary">
-                💰 ${escapeHTML(salary)}
-              </span>
-
+              <span class="info">📍 ${escapeHTML(location)}</span>
+              <span class="info">💼 ${escapeHTML(workType)}</span>
+              <span class="salary">💰 ${escapeHTML(salary)}</span>
             </div>
-
-            <div class="section-title">
-              Description
-            </div>
-
-            <div class="description">
-              ${escapeHTML(description)}
-            </div>
-
-            ${
-              requirements
-                ? `
-                  <div class="section-title">
-                    Requirements
-                  </div>
-
-                  <div class="requirements">
-                    ${escapeHTML(requirements)}
-                  </div>
-                `
-                : ""
-            }
-
-            ${
-              benefits
-                ? `
-                  <div class="section-title">
-                    Benefits
-                  </div>
-
-                  <div class="benefits">
-                    ${escapeHTML(benefits)}
-                  </div>
-                `
-                : ""
-            }
-
-            ${
-              applyUrl
-                ? `
-                  <button
-                    class="apply-btn"
-                    data-job-index="${index}"
-                  >
-                    Apply via WhatsApp
-                  </button>
-                `
-                : `
-                  <button
-                    class="apply-btn disabled"
-                    disabled
-                  >
-                    Application Link Unavailable
-                  </button>
-                `
-            }
-
-            ${
-              job.created_at
-                ? `
-                  <div class="date">
-                    Posted ${formatDate(job.created_at)}
-                  </div>
-                `
-                : ""
-            }
-
+            <div class="section-title">Description</div>
+            <div class="description">${escapeHTML(description)}</div>
+            ${requirements? `<div class="section-title">Requirements</div><div class="requirements">${escapeHTML(requirements)}</div>` : ""}
+            ${benefits? `<div class="section-title">Benefits</div><div class="benefits">${escapeHTML(benefits)}</div>` : ""}
+            ${applyUrl? `<button class="apply-btn" data-job-index="${index}">Apply via WhatsApp</button>` : `<button class="apply-btn disabled" disabled>Application Link Unavailable</button>`}
+            ${job.created_at? `<div class="date">Posted ${formatDate(job.created_at)}</div>` : ""}
           </article>
         `;
-
-      }).join("");
-
+    }).join("");
     attachApplyButtons();
   }
 
-
-  /* =========================================
-     APPLY BUTTONS
-     ========================================= */
-
   function attachApplyButtons() {
-
-    const buttons =
-      document.querySelectorAll(
-        ".apply-btn[data-job-index]"
-      );
-
+    const buttons = document.querySelectorAll(".apply-btn[data-job-index]");
     buttons.forEach(function(button) {
-
-      button.addEventListener(
-        "click",
-        function() {
-
-          const index =
-            Number(
-              button.getAttribute(
-                "data-job-index"
-              )
-            );
-
-          const job =
-            filteredJobs[index];
-
-          if (!job) {
-            return;
-          }
-
-          const applyUrl =
-            getApplyUrl(job);
-
-          if (!applyUrl) {
-
-            alert(
-              "The application link is not available for this job."
-            );
-
-            return;
-          }
-
-          window.open(
-            applyUrl,
-            "_blank",
-            "noopener,noreferrer"
-          );
-
+      button.addEventListener("click", function() {
+        const index = Number(button.getAttribute("data-job-index"));
+        const job = filteredJobs[index];
+        if (!job) return;
+        const applyUrl = getApplyUrl(job);
+        if (!applyUrl) {
+          alert("The application link is not available for this job.");
+          return;
         }
-      );
-
+        window.open(applyUrl, "_blank", "noopener,noreferrer");
+      });
     });
   }
 
-
-  /* =========================================
-     SEARCH
-     ========================================= */
-
   function searchJobs() {
-
-    const input =
-      document.getElementById(
-        "searchInput"
-      );
-
-    const search =
-      input.value
-        .trim()
-        .toLowerCase();
-
+    const input = document.getElementById("searchInput");
+    const search = input.value.trim().toLowerCase();
     if (!search) {
-
-      filteredJobs =
-        [...allJobs];
-
+      filteredJobs = [...allJobs];
       renderJobs();
-
       return;
     }
-
-    filteredJobs =
-      allJobs.filter(function(job) {
-
-        const searchableText = [
-
-          job.title,
-          job.company,
-          job.location,
-          job.salary,
-          job.description,
-          job.requirements,
-          job.benefits,
-          job.work_type
-
-        ]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase();
-
-        return searchableText.includes(search);
-
-      });
-
+    filteredJobs = allJobs.filter(function(job) {
+      const searchableText = [job.title, job.company, job.location, job.salary, job.description, job.requirements, job.benefits, job.work_type].filter(Boolean).join(" ").toLowerCase();
+      return searchableText.includes(search);
+    });
     renderJobs();
   }
 
-
-  /* =========================================
-     EVENTS
-     ========================================= */
-
-  document
-    .getElementById("searchInput")
-    .addEventListener(
-      "input",
-      searchJobs
-    );
-
-
-  document
-    .getElementById("refreshBtn")
-    .addEventListener(
-      "click",
-      loadJobs
-    );
-
-
-  /* =========================================
-     START
-     ========================================= */
-
+  document.getElementById("searchInput").addEventListener("input", searchJobs);
+  document.getElementById("refreshBtn").addEventListener("click", loadJobs);
   loadJobs();
-
 </script>
 
 </body>
