@@ -1,285 +1,691 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Aurelia Jobs - Admin Panel</title>
+  <title>Aurelia Jobs — Admin Panel</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-<style>
-*{
-  box-sizing:border-box;
-}
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f5f7fb;
+      color: #1f2937;
+    }
 
-body{
-  margin:0;
-  padding:20px;
-  font-family:Arial,sans-serif;
-  background:#f5f7fb;
-  color:#111827;
-}
+    .header {
+      background: #111827;
+      color: white;
+      padding: 18px 16px;
+    }
 
-.container{
-  max-width:900px;
-  margin:auto;
-}
+    .header-inner {
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
 
-.card{
-  background:white;
-  padding:24px;
-  border-radius:16px;
-  margin-bottom:20px;
-  box-shadow:0 3px 12px rgba(0,0,0,.06);
-}
+    .logo {
+      font-size: 22px;
+      font-weight: 800;
+    }
 
-h1,h2{
-  margin-top:0;
-}
+    .logout-btn {
+      border: 0;
+      background: #ef4444;
+      color: white;
+      padding: 9px 14px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: 600;
+    }
 
-input,textarea{
-  width:100%;
-  padding:13px;
-  margin:6px 0 15px;
-  border:1px solid #d1d5db;
-  border-radius:9px;
-  font-size:15px;
-}
+    .logout-btn:hover {
+      background: #dc2626;
+    }
 
-textarea{
-  min-height:120px;
-  resize:vertical;
-}
+    .container {
+      max-width: 1100px;
+      margin: 25px auto;
+      padding: 0 16px;
+    }
 
-button{
-  border:0;
-  border-radius:9px;
-  padding:12px 18px;
-  font-size:15px;
-  cursor:pointer;
-  color:white;
-  background:#111827;
-}
+    .login-box,
+    .admin-box,
+    .job-item {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
 
-button:hover{
-  opacity:.9;
-}
+    .login-box {
+      max-width: 430px;
+      margin: 60px auto;
+      padding: 25px;
+    }
 
-.btn-save{
-  background:#16a34a;
-  width:100%;
-}
+    .admin-box {
+      padding: 22px;
+      margin-bottom: 25px;
+    }
 
-.btn-edit{
-  background:#2563eb;
-  margin-right:8px;
-}
+    h1,
+    h2 {
+      margin-top: 0;
+    }
 
-.btn-delete{
-  background:#dc2626;
-}
+    h1 {
+      font-size: 25px;
+    }
 
-.btn-logout{
-  background:#6b7280;
-  float:right;
-}
+    h2 {
+      font-size: 20px;
+    }
 
-.job{
-  border:1px solid #e5e7eb;
-  padding:18px;
-  border-radius:12px;
-  margin-top:14px;
-}
+    .subtitle {
+      color: #6b7280;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
 
-.job h3{
-  margin:0 0 8px;
-}
+    label {
+      display: block;
+      font-weight: 700;
+      font-size: 14px;
+      margin: 15px 0 7px;
+    }
 
-.job-info{
-  color:#64748b;
-  line-height:1.7;
-}
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 15px;
+      outline: none;
+      background: white;
+    }
 
-.actions{
-  margin-top:15px;
-}
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #2563eb;
+    }
 
-#adminPanel{
-  display:none;
-}
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
 
-#message{
-  margin-top:10px;
-  padding:10px;
-  border-radius:8px;
-  display:none;
-}
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 15px;
+    }
 
-.success{
-  background:#dcfce7;
-  color:#166534;
-}
+    .full {
+      grid-column: 1 / -1;
+    }
 
-.error{
-  background:#fee2e2;
-  color:#991b1b;
-}
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
 
-.loading{
-  opacity:.6;
-  pointer-events:none;
-}
+    button {
+      font-family: inherit;
+    }
 
-.clear{
-  clear:both;
-}
-</style>
+    .primary-btn {
+      border: 0;
+      background: #2563eb;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .primary-btn:hover {
+      background: #1d4ed8;
+    }
+
+    .secondary-btn {
+      border: 0;
+      background: #6b7280;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .secondary-btn:hover {
+      background: #4b5563;
+    }
+
+    .delete-btn {
+      border: 0;
+      background: #dc2626;
+      color: white;
+      padding: 9px 13px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .edit-btn {
+      border: 0;
+      background: #f59e0b;
+      color: white;
+      padding: 9px 13px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .job-list {
+      display: grid;
+      gap: 15px;
+    }
+
+    .job-item {
+      padding: 18px;
+    }
+
+    .job-item h3 {
+      margin: 0 0 8px;
+      font-size: 19px;
+    }
+
+    .company {
+      color: #4b5563;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .job-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 12px;
+    }
+
+    .meta {
+      background: #f3f4f6;
+      padding: 5px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #374151;
+    }
+
+    .salary {
+      background: #ecfdf5;
+      color: #047857;
+      padding: 5px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .job-description {
+      color: #4b5563;
+      font-size: 14px;
+      line-height: 1.5;
+      white-space: pre-line;
+    }
+
+    .job-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .status {
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 15px;
+      display: none;
+      font-size: 14px;
+    }
+
+    .success {
+      display: block;
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+    }
+
+    .error {
+      display: block;
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+
+    .info {
+      display: block;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 30px;
+      color: #6b7280;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+    }
+
+    .user-email {
+      font-size: 13px;
+      color: #d1d5db;
+      margin-top: 4px;
+    }
+
+    .small-note {
+      color: #6b7280;
+      font-size: 12px;
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 700px) {
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .full {
+        grid-column: auto;
+      }
+
+      .header-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="container">
+<!-- =========================================
+     HEADER
+========================================= -->
 
-  <!-- LOGIN -->
-  <div id="loginPanel" class="card">
+<header class="header">
+  <div class="header-inner">
 
-    <h2>Aurelia Jobs</h2>
-    <p>Admin Login</p>
+    <div>
+      <div class="logo">
+        Aurelia Jobs — Admin
+      </div>
 
-    <input
-      type="email"
-      id="email"
-      placeholder="Admin email"
-      autocomplete="email"
-    >
+      <div
+        id="userEmail"
+        class="user-email">
+      </div>
+    </div>
 
-    <input
-      type="password"
-      id="password"
-      placeholder="Password"
-      autocomplete="current-password"
-    >
-
-    <button onclick="login()" style="width:100%;">
-      Login
+    <button
+      id="logoutBtn"
+      class="logout-btn hidden">
+      Logout
     </button>
 
-    <div id="loginMessage"></div>
+  </div>
+</header>
+
+
+<!-- =========================================
+     LOGIN
+========================================= -->
+
+<div
+  id="loginSection"
+  class="container">
+
+  <div class="login-box">
+
+    <h1>Admin Login</h1>
+
+    <div class="subtitle">
+      Sign in to manage Aurelia Jobs.
+    </div>
+
+    <form id="loginForm">
+
+      <label for="loginEmail">
+        Email
+      </label>
+
+      <input
+        type="email"
+        id="loginEmail"
+        placeholder="Enter your email"
+        required
+      >
+
+      <label for="loginPassword">
+        Password
+      </label>
+
+      <input
+        type="password"
+        id="loginPassword"
+        placeholder="Enter your password"
+        required
+      >
+
+      <div class="button-row">
+
+        <button
+          type="submit"
+          class="primary-btn">
+          Login
+        </button>
+
+      </div>
+
+    </form>
+
+    <div
+      id="loginStatus"
+      class="status">
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================================
+     ADMIN PANEL
+========================================= -->
+
+<div
+  id="adminSection"
+  class="container hidden">
+
+
+  <!-- =======================================
+       ADD / EDIT JOB
+  ======================================== -->
+
+  <div class="admin-box">
+
+    <h1 id="formTitle">
+      Add New Job
+    </h1>
+
+    <div class="subtitle">
+      Create and publish a job opportunity.
+    </div>
+
+
+    <form id="jobForm">
+
+      <input
+        type="hidden"
+        id="jobId"
+      >
+
+
+      <div class="form-grid">
+
+
+        <!-- TITLE -->
+
+        <div>
+
+          <label for="title">
+            Job Title *
+          </label>
+
+          <input
+            type="text"
+            id="title"
+            placeholder="Online Chat Host"
+            required
+          >
+
+        </div>
+
+
+        <!-- COMPANY -->
+
+        <div>
+
+          <label for="company">
+            Company *
+          </label>
+
+          <input
+            type="text"
+            id="company"
+            placeholder="Aurelia Global"
+            required
+          >
+
+        </div>
+
+
+        <!-- LOCATION -->
+
+        <div>
+
+          <label for="location">
+            Location *
+          </label>
+
+          <input
+            type="text"
+            id="location"
+            placeholder="Remote / Worldwide"
+            required
+          >
+
+        </div>
+
+
+        <!-- SALARY -->
+
+        <div>
+
+          <label for="salary">
+            Salary
+          </label>
+
+          <input
+            type="text"
+            id="salary"
+            placeholder="$500–$1,000 / 14 days"
+          >
+
+        </div>
+
+
+        <!-- WORK TYPE -->
+
+        <div>
+
+          <label for="work_type">
+            Work Type
+          </label>
+
+          <select id="work_type">
+
+            <option value="Remote">
+              Remote
+            </option>
+
+            <option value="Work From Home">
+              Work From Home
+            </option>
+
+            <option value="Part Time">
+              Part Time
+            </option>
+
+            <option value="Full Time">
+              Full Time
+            </option>
+
+            <option value="Freelance">
+              Freelance
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- APPLICATION URL -->
+
+        <div>
+
+          <label for="apply_url">
+            WhatsApp / Application URL *
+          </label>
+
+          <input
+            type="url"
+            id="apply_url"
+            placeholder="https://wa.me/..."
+            required
+          >
+
+          <div class="small-note">
+            Put the WhatsApp link here. Applicants will be sent directly to this link.
+          </div>
+
+        </div>
+
+
+        <!-- DESCRIPTION -->
+
+        <div class="full">
+
+          <label for="description">
+            Description *
+          </label>
+
+          <textarea
+            id="description"
+            placeholder="Describe the job..."
+            required
+          ></textarea>
+
+        </div>
+
+
+        <!-- REQUIREMENTS -->
+
+        <div class="full">
+
+          <label for="requirements">
+            Requirements
+          </label>
+
+          <textarea
+            id="requirements"
+            placeholder="Female, 18+, smartphone, stable internet..."
+          ></textarea>
+
+        </div>
+
+
+        <!-- BENEFITS -->
+
+        <div class="full">
+
+          <label for="benefits">
+            Benefits
+          </label>
+
+          <textarea
+            id="benefits"
+            placeholder="Training, flexible schedule, remote work..."
+          ></textarea>
+
+        </div>
+
+
+      </div>
+
+
+      <div class="button-row">
+
+        <button
+          type="submit"
+          id="saveBtn"
+          class="primary-btn">
+          Publish Job
+        </button>
+
+        <button
+          type="button"
+          id="cancelBtn"
+          class="secondary-btn hidden">
+          Cancel Edit
+        </button>
+
+      </div>
+
+
+      <div
+        id="formStatus"
+        class="status">
+      </div>
+
+    </form>
 
   </div>
 
 
-  <!-- ADMIN -->
-  <div id="adminPanel">
+  <!-- =======================================
+       JOB LIST
+  ======================================== -->
 
-    <div class="card">
+  <div class="admin-box">
 
-      <button class="btn-logout" onclick="logout()">
-        Logout
-      </button>
+    <h2>
+      Published Jobs
+    </h2>
 
-      <h1>Aurelia Jobs</h1>
-      <p>Admin Panel</p>
-
-      <div class="clear"></div>
-
+    <div
+      id="jobCount"
+      class="subtitle">
+      Loading...
     </div>
 
+    <div
+      id="jobsList"
+      class="job-list">
 
-    <!-- JOB FORM -->
-    <div class="card">
-
-      <h2 id="formTitle">Add Job</h2>
-
-      <input type="hidden" id="jobId">
-
-      <label>Title</label>
-      <input
-        type="text"
-        id="title"
-        placeholder="Online Chat Host"
-      >
-
-      <label>Company</label>
-      <input
-        type="text"
-        id="company"
-        value="Aurelia Global"
-      >
-
-      <label>Location</label>
-      <input
-        type="text"
-        id="location"
-        value="Remote"
-      >
-
-      <label>Salary</label>
-      <input
-        type="text"
-        id="salary"
-        value="$500 - $1,000 / 14 days"
-      >
-
-      <label>Description</label>
-      <textarea
-        id="description"
-        placeholder="Job description..."
-      ></textarea>
-
-      <label>Requirements</label>
-      <textarea
-        id="requirements"
-        placeholder="Job requirements..."
-      ></textarea>
-
-      <label>Benefits</label>
-      <textarea
-        id="benefits"
-        placeholder="Benefits..."
-      ></textarea>
-
-      <label>Apply Link</label>
-      <input
-        type="url"
-        id="apply_link"
-        value="https://wa.me/62881011654730"
-      >
-
-      <button
-        class="btn-save"
-        onclick="saveJob()"
-        id="saveButton"
-      >
-        Save Job
-      </button>
-
-      <button
-        onclick="cancelEdit()"
-        id="cancelButton"
-        style="display:none;width:100%;margin-top:8px;background:#6b7280;"
-      >
-        Cancel Edit
-      </button>
-
-      <div id="message"></div>
-
-    </div>
-
-
-    <!-- JOB LIST -->
-    <div class="card">
-
-      <h2>
-        Job Listings
-        <span id="jobCount" style="font-size:16px;color:#64748b;">
-          0 job(s)
-        </span>
-      </h2>
-
-      <div id="jobList">
-        Loading...
+      <div class="empty">
+        Loading jobs...
       </div>
 
     </div>
@@ -291,643 +697,1064 @@ button:hover{
 
 <script>
 
-/* =========================
-   SUPABASE CONFIG
-========================= */
+/* =========================================
+   SUPABASE CONFIGURATION
+========================================= */
 
 const SUPABASE_URL =
-"https://oeugfykyaookmjdvszzz.supabase.co";
+  "https://oeugfykyaookmjdvszzz.supabase.co";
 
 const SUPABASE_KEY =
-"sb_publishable_VetH8VzU8BMEkh0dZMjqWQ_uX-0AWzb";
+  "sb_publishable_VetH8VzU8BMEkh0dZMjqWQ_uX-0AWzb";
 
 
-const supabaseClient =
-window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+/* =========================================
+   GLOBAL VARIABLES
+========================================= */
+
+let currentSession = null;
+let jobs = [];
 
 
-/* =========================
+/* =========================================
    ELEMENTS
-========================= */
+========================================= */
 
-const loginPanel =
-document.getElementById("loginPanel");
+const loginSection =
+  document.getElementById("loginSection");
 
-const adminPanel =
-document.getElementById("adminPanel");
+const adminSection =
+  document.getElementById("adminSection");
 
-const emailInput =
-document.getElementById("email");
+const logoutBtn =
+  document.getElementById("logoutBtn");
 
-const passwordInput =
-document.getElementById("password");
+const userEmail =
+  document.getElementById("userEmail");
 
-const loginMessage =
-document.getElementById("loginMessage");
+const loginForm =
+  document.getElementById("loginForm");
 
-const message =
-document.getElementById("message");
+const loginStatus =
+  document.getElementById("loginStatus");
 
-const jobList =
-document.getElementById("jobList");
+const jobForm =
+  document.getElementById("jobForm");
+
+const formTitle =
+  document.getElementById("formTitle");
+
+const formStatus =
+  document.getElementById("formStatus");
+
+const saveBtn =
+  document.getElementById("saveBtn");
+
+const cancelBtn =
+  document.getElementById("cancelBtn");
+
+const jobsList =
+  document.getElementById("jobsList");
 
 const jobCount =
-document.getElementById("jobCount");
+  document.getElementById("jobCount");
 
 
-/* =========================
-   START
-========================= */
+/* =========================================
+   STATUS MESSAGE
+========================================= */
 
-document.addEventListener(
-  "DOMContentLoaded",
-  checkSession
+function showStatus(
+  element,
+  message,
+  type
+) {
+
+  element.textContent = message;
+
+  element.className =
+    "status " + type;
+
+}
+
+
+function clearStatus(element) {
+
+  element.textContent = "";
+
+  element.className =
+    "status";
+
+}
+
+
+/* =========================================
+   LOGIN
+========================================= */
+
+loginForm.addEventListener(
+  "submit",
+  async function(event) {
+
+    event.preventDefault();
+
+    clearStatus(loginStatus);
+
+    const email =
+      document
+        .getElementById("loginEmail")
+        .value
+        .trim();
+
+    const password =
+      document
+        .getElementById("loginPassword")
+        .value;
+
+    showStatus(
+      loginStatus,
+      "Signing in...",
+      "info"
+    );
+
+    try {
+
+      const response =
+        await fetch(
+          SUPABASE_URL +
+          "/auth/v1/token?grant_type=password",
+          {
+            method: "POST",
+
+            headers: {
+              "apikey": SUPABASE_KEY,
+              "Content-Type":
+                "application/json"
+            },
+
+            body: JSON.stringify({
+              email: email,
+              password: password
+            })
+          }
+        );
+
+
+      const data =
+        await response.json();
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          data.error_description ||
+          data.msg ||
+          data.message ||
+          "Login failed."
+        );
+      }
+
+
+      currentSession = data;
+
+
+      localStorage.setItem(
+        "aurelia_access_token",
+        data.access_token
+      );
+
+      localStorage.setItem(
+        "aurelia_refresh_token",
+        data.refresh_token || ""
+      );
+
+      localStorage.setItem(
+        "aurelia_user_email",
+        email
+      );
+
+
+      showAdmin();
+
+
+    } catch (error) {
+
+      console.error(error);
+
+      showStatus(
+        loginStatus,
+        error.message ||
+        "Login failed.",
+        "error"
+      );
+    }
+
+  }
 );
 
 
-/* =========================
-   CHECK LOGIN
-========================= */
+/* =========================================
+   SHOW ADMIN
+========================================= */
 
-async function checkSession(){
+function showAdmin() {
 
-  const {
-    data,
-    error
-  } = await supabaseClient.auth.getSession();
+  loginSection.classList.add("hidden");
 
-  if(error){
-    console.error(error);
-    showLogin();
-    return;
-  }
+  adminSection.classList.remove("hidden");
 
-  if(data.session){
-    showAdmin();
-    loadJobs();
-  }else{
-    showLogin();
-  }
-}
-
-
-/* =========================
-   LOGIN
-========================= */
-
-async function login(){
+  logoutBtn.classList.remove("hidden");
 
   const email =
-    emailInput.value.trim();
-
-  const password =
-    passwordInput.value;
-
-  if(!email || !password){
-    showLoginError(
-      "Please enter your email and password."
-    );
-    return;
-  }
-
-  loginMessage.style.display = "block";
-  loginMessage.className = "";
-  loginMessage.innerText = "Logging in...";
-
-  const {
-    data,
-    error
-  } = await supabaseClient.auth.signInWithPassword({
-    email: email,
-    password: password
-  });
-
-  if(error){
-
-    showLoginError(
-      error.message
+    localStorage.getItem(
+      "aurelia_user_email"
     );
 
-    return;
-  }
+  userEmail.textContent =
+    email || "Admin";
 
-  if(data.session){
+  loadJobs();
+}
+
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+logoutBtn.addEventListener(
+  "click",
+  async function() {
+
+    const token =
+      localStorage.getItem(
+        "aurelia_access_token"
+      );
+
+    try {
+
+      if (token) {
+
+        await fetch(
+          SUPABASE_URL +
+          "/auth/v1/logout",
+          {
+            method: "POST",
+
+            headers: {
+              "apikey": SUPABASE_KEY,
+              "Authorization":
+                "Bearer " + token
+            }
+          }
+        );
+      }
+
+    } catch (error) {
+
+      console.error(error);
+
+    }
+
+
+    localStorage.removeItem(
+      "aurelia_access_token"
+    );
+
+    localStorage.removeItem(
+      "aurelia_refresh_token"
+    );
+
+    localStorage.removeItem(
+      "aurelia_user_email"
+    );
+
+    currentSession = null;
+
+    adminSection.classList.add(
+      "hidden"
+    );
+
+    logoutBtn.classList.add(
+      "hidden"
+    );
+
+    loginSection.classList.remove(
+      "hidden"
+    );
+
+    loginForm.reset();
+
+  }
+);
+
+
+/* =========================================
+   AUTH CHECK
+========================================= */
+
+function checkExistingLogin() {
+
+  const token =
+    localStorage.getItem(
+      "aurelia_access_token"
+    );
+
+  const email =
+    localStorage.getItem(
+      "aurelia_user_email"
+    );
+
+  if (token) {
+
+    currentSession = {
+      access_token: token
+    };
+
+    userEmail.textContent =
+      email || "Admin";
 
     showAdmin();
 
-    loadJobs();
+  } else {
 
-    loginMessage.style.display = "none";
-  }
-}
-
-
-/* =========================
-   LOGOUT
-========================= */
-
-async function logout(){
-
-  const {
-    error
-  } = await supabaseClient.auth.signOut();
-
-  if(error){
-
-    alert(
-      "Logout failed: " +
-      error.message
+    loginSection.classList.remove(
+      "hidden"
     );
 
-    return;
+    adminSection.classList.add(
+      "hidden"
+    );
+
   }
-
-  showLogin();
-
-  clearForm();
 }
 
 
-/* =========================
-   SHOW LOGIN
-========================= */
+/* =========================================
+   GET AUTH TOKEN
+========================================= */
 
-function showLogin(){
+function getToken() {
 
-  loginPanel.style.display =
-    "block";
-
-  adminPanel.style.display =
-    "none";
+  return localStorage.getItem(
+    "aurelia_access_token"
+  );
 }
 
 
-/* =========================
-   SHOW ADMIN
-========================= */
-
-function showAdmin(){
-
-  loginPanel.style.display =
-    "none";
-
-  adminPanel.style.display =
-    "block";
-}
-
-
-/* =========================
+/* =========================================
    LOAD JOBS
-========================= */
+========================================= */
 
-async function loadJobs(){
+async function loadJobs() {
 
-  jobList.innerHTML =
-    "Loading...";
+  jobsList.innerHTML = `
+    <div class="empty">
+      Loading jobs...
+    </div>
+  `;
 
-  const {
-    data,
-    error
-  } = await supabaseClient
-    .from("jobs")
-    .select("*")
-    .order("created_at", {
-      ascending:false
-    });
+  try {
 
-  if(error){
+    const token =
+      getToken();
+
+    if (!token) {
+
+      throw new Error(
+        "You are not logged in."
+      );
+    }
+
+
+    const response =
+      await fetch(
+        SUPABASE_URL +
+        "/rest/v1/jobs?select=*&order=created_at.desc",
+        {
+          method: "GET",
+
+          headers: {
+            "apikey": SUPABASE_KEY,
+            "Authorization":
+              "Bearer " + token
+          }
+        }
+      );
+
+
+    if (!response.ok) {
+
+      const text =
+        await response.text();
+
+      console.error(text);
+
+      throw new Error(
+        "Unable to load jobs."
+      );
+    }
+
+
+    jobs =
+      await response.json();
+
+
+    renderJobs();
+
+
+  } catch (error) {
 
     console.error(error);
 
-    jobList.innerHTML =
-      `<div class="error" style="display:block">
-        Failed to load jobs.<br><br>
-        ${escapeHtml(error.message)}
-      </div>`;
+    jobsList.innerHTML = `
+      <div class="empty">
+        Unable to load jobs.
+        <br><br>
+        ${escapeHTML(error.message)}
+      </div>
+    `;
+
+    jobCount.textContent =
+      "Unable to load jobs.";
+  }
+}
+
+
+/* =========================================
+   RENDER JOBS
+========================================= */
+
+function renderJobs() {
+
+  jobCount.textContent =
+    jobs.length +
+    (jobs.length === 1
+      ? " job"
+      : " jobs");
+
+
+  if (jobs.length === 0) {
+
+    jobsList.innerHTML = `
+      <div class="empty">
+        No jobs published yet.
+      </div>
+    `;
 
     return;
   }
 
-  jobCount.innerText =
-    data.length + " job(s)";
 
-  if(data.length === 0){
-
-    jobList.innerHTML =
-      "<p>No jobs found.</p>";
-
-    return;
-  }
-
-  jobList.innerHTML =
-    data.map(job => {
+  jobsList.innerHTML =
+    jobs.map(function(job) {
 
       return `
-        <div class="job">
+
+        <div class="job-item">
 
           <h3>
-            ${escapeHtml(job.title || "")}
+            ${escapeHTML(
+              job.title ||
+              "Untitled Job"
+            )}
           </h3>
 
-          <div class="job-info">
+          <div class="company">
+            🏢 ${escapeHTML(
+              job.company ||
+              "Company not specified"
+            )}
+          </div>
 
-            🏢 ${escapeHtml(job.company || "")}<br>
+          <div class="job-meta">
 
-            📍 ${escapeHtml(job.location || "")}<br>
+            <span class="meta">
+              📍 ${escapeHTML(
+                job.location ||
+                "Remote"
+              )}
+            </span>
 
-            💰 ${escapeHtml(job.salary || "")}
+            <span class="meta">
+              💼 ${escapeHTML(
+                job.work_type ||
+                "Remote"
+              )}
+            </span>
+
+            <span class="salary">
+              💰 ${escapeHTML(
+                job.salary ||
+                "Not specified"
+              )}
+            </span>
 
           </div>
 
-          <div class="actions">
+          <div class="job-description">
+            ${escapeHTML(
+              job.description ||
+              ""
+            )}
+          </div>
+
+          <div class="job-actions">
 
             <button
-              class="btn-edit"
-              onclick="editJob('${job.id}')"
-            >
+              class="edit-btn"
+              onclick="editJob('${job.id}')">
               Edit
             </button>
 
             <button
-              class="btn-delete"
-              onclick="deleteJob('${job.id}')"
-            >
+              class="delete-btn"
+              onclick="deleteJob('${job.id}')">
               Delete
             </button>
 
           </div>
 
         </div>
+
       `;
 
     }).join("");
 }
 
 
-/* =========================
-   SAVE JOB
-========================= */
+/* =========================================
+   ADD / UPDATE JOB
+========================================= */
 
-async function saveJob(){
+jobForm.addEventListener(
+  "submit",
+  async function(event) {
 
-  const id =
-    document.getElementById("jobId").value;
+    event.preventDefault();
 
-  const job = {
+    clearStatus(formStatus);
 
-    title:
-      document.getElementById("title").value.trim(),
+    const token =
+      getToken();
 
-    company:
-      document.getElementById("company").value.trim(),
+    if (!token) {
 
-    location:
-      document.getElementById("location").value.trim(),
+      showStatus(
+        formStatus,
+        "Your session has expired. Please login again.",
+        "error"
+      );
 
-    salary:
-      document.getElementById("salary").value.trim(),
-
-    description:
-      document.getElementById("description").value.trim(),
-
-    requirements:
-      document.getElementById("requirements").value.trim(),
-
-    benefits:
-      document.getElementById("benefits").value.trim(),
-
-    apply_link:
-      document.getElementById("apply_link").value.trim(),
-
-    work_type:
-      "Remote"
-  };
+      return;
+    }
 
 
-  if(!job.title){
+    const jobId =
+      document
+        .getElementById("jobId")
+        .value
+        .trim();
 
-    showMessage(
-      "Job title is required.",
-      true
+
+    const jobData = {
+
+      title:
+        document
+          .getElementById("title")
+          .value
+          .trim(),
+
+      company:
+        document
+          .getElementById("company")
+          .value
+          .trim(),
+
+      location:
+        document
+          .getElementById("location")
+          .value
+          .trim(),
+
+      salary:
+        document
+          .getElementById("salary")
+          .value
+          .trim(),
+
+      work_type:
+        document
+          .getElementById("work_type")
+          .value,
+
+      description:
+        document
+          .getElementById("description")
+          .value
+          .trim(),
+
+      requirements:
+        document
+          .getElementById("requirements")
+          .value
+          .trim(),
+
+      benefits:
+        document
+          .getElementById("benefits")
+          .value
+          .trim(),
+
+      apply_url:
+        document
+          .getElementById("apply_url")
+          .value
+          .trim()
+
+    };
+
+
+    if (!jobData.title ||
+        !jobData.company ||
+        !jobData.location ||
+        !jobData.description ||
+        !jobData.apply_url) {
+
+      showStatus(
+        formStatus,
+        "Please complete all required fields.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    saveBtn.disabled = true;
+
+    saveBtn.textContent =
+      jobId
+        ? "Updating..."
+        : "Publishing...";
+
+
+    try {
+
+      let response;
+
+
+      if (jobId) {
+
+        /* UPDATE */
+
+        response =
+          await fetch(
+            SUPABASE_URL +
+            "/rest/v1/jobs?id=eq." +
+            encodeURIComponent(jobId),
+            {
+              method: "PATCH",
+
+              headers: {
+                "apikey": SUPABASE_KEY,
+
+                "Authorization":
+                  "Bearer " + token,
+
+                "Content-Type":
+                  "application/json",
+
+                "Prefer":
+                  "return=representation"
+              },
+
+              body:
+                JSON.stringify(jobData)
+            }
+          );
+
+      } else {
+
+        /* INSERT */
+
+        response =
+          await fetch(
+            SUPABASE_URL +
+            "/rest/v1/jobs",
+            {
+              method: "POST",
+
+              headers: {
+                "apikey": SUPABASE_KEY,
+
+                "Authorization":
+                  "Bearer " + token,
+
+                "Content-Type":
+                  "application/json",
+
+                "Prefer":
+                  "return=representation"
+              },
+
+              body:
+                JSON.stringify(jobData)
+            }
+          );
+      }
+
+
+      if (!response.ok) {
+
+        const errorText =
+          await response.text();
+
+        console.error(
+          "Supabase error:",
+          errorText
+        );
+
+        throw new Error(
+          "Database rejected the request."
+        );
+      }
+
+
+      showStatus(
+        formStatus,
+        jobId
+          ? "Job updated successfully."
+          : "Job published successfully.",
+        "success"
+      );
+
+
+      resetForm();
+
+      await loadJobs();
+
+
+    } catch (error) {
+
+      console.error(error);
+
+      showStatus(
+        formStatus,
+        error.message ||
+        "Unable to save job.",
+        "error"
+      );
+
+    } finally {
+
+      saveBtn.disabled = false;
+
+      saveBtn.textContent =
+        document
+          .getElementById("jobId")
+          .value
+          ? "Update Job"
+          : "Publish Job";
+    }
+
+  }
+);
+
+
+/* =========================================
+   EDIT JOB
+========================================= */
+
+window.editJob = function(id) {
+
+  const job =
+    jobs.find(function(item) {
+
+      return String(item.id) ===
+        String(id);
+
+    });
+
+
+  if (!job) {
+
+    alert(
+      "Job not found."
     );
 
     return;
   }
 
 
-  const button =
-    document.getElementById("saveButton");
-
-  button.disabled = true;
-  button.innerText = "Saving...";
-
-
-  let result;
+  document
+    .getElementById("jobId")
+    .value =
+      job.id || "";
 
 
-  if(id){
-
-    result =
-      await supabaseClient
-        .from("jobs")
-        .update(job)
-        .eq("id", id);
-
-  }else{
-
-    result =
-      await supabaseClient
-        .from("jobs")
-        .insert([job]);
-
-  }
+  document
+    .getElementById("title")
+    .value =
+      job.title || "";
 
 
-  button.disabled = false;
-  button.innerText = "Save Job";
+  document
+    .getElementById("company")
+    .value =
+      job.company || "";
 
 
-  if(result.error){
-
-    console.error(result.error);
-
-    showMessage(
-      "Save failed: " +
-      result.error.message,
-      true
-    );
-
-    return;
-  }
+  document
+    .getElementById("location")
+    .value =
+      job.location || "";
 
 
-  showMessage(
-    id
-      ? "Job updated successfully."
-      : "Job added successfully."
+  document
+    .getElementById("salary")
+    .value =
+      job.salary || "";
+
+
+  document
+    .getElementById("work_type")
+    .value =
+      job.work_type || "Remote";
+
+
+  document
+    .getElementById("description")
+    .value =
+      job.description || "";
+
+
+  document
+    .getElementById("requirements")
+    .value =
+      job.requirements || "";
+
+
+  document
+    .getElementById("benefits")
+    .value =
+      job.benefits || "";
+
+
+  document
+    .getElementById("apply_url")
+    .value =
+      job.apply_url ||
+      job.apply_link ||
+      "";
+
+
+  formTitle.textContent =
+    "Edit Job";
+
+
+  saveBtn.textContent =
+    "Update Job";
+
+
+  cancelBtn.classList.remove(
+    "hidden"
   );
 
 
-  clearForm();
-
-  loadJobs();
-}
-
-
-/* =========================
-   EDIT JOB
-========================= */
-
-async function editJob(id){
-
-  const {
-    data,
-    error
-  } = await supabaseClient
-    .from("jobs")
-    .select("*")
-    .eq("id", id)
-    .single();
-
-
-  if(error){
-
-    alert(
-      "Unable to load job: " +
-      error.message
-    );
-
-    return;
-  }
-
-
-  document.getElementById("jobId").value =
-    data.id || "";
-
-  document.getElementById("title").value =
-    data.title || "";
-
-  document.getElementById("company").value =
-    data.company || "";
-
-  document.getElementById("location").value =
-    data.location || "";
-
-  document.getElementById("salary").value =
-    data.salary || "";
-
-  document.getElementById("description").value =
-    data.description || "";
-
-  document.getElementById("requirements").value =
-    data.requirements || "";
-
-  document.getElementById("benefits").value =
-    data.benefits || "";
-
-  document.getElementById("apply_link").value =
-    data.apply_link || "";
-
-
-  document.getElementById("formTitle").innerText =
-    "Edit Job";
-
-  document.getElementById("saveButton").innerText =
-    "Update Job";
-
-  document.getElementById("cancelButton").style.display =
-    "block";
+  clearStatus(formStatus);
 
 
   window.scrollTo({
-    top:0,
-    behavior:"smooth"
+    top: 0,
+    behavior: "smooth"
   });
-}
+
+};
 
 
-/* =========================
+/* =========================================
    DELETE JOB
-========================= */
+========================================= */
 
-async function deleteJob(id){
+window.deleteJob = async function(id) {
 
   const confirmed =
     confirm(
       "Are you sure you want to delete this job?"
     );
 
-  if(!confirmed){
+
+  if (!confirmed) {
     return;
   }
 
 
-  const {
-    error
-  } = await supabaseClient
-    .from("jobs")
-    .delete()
-    .eq("id", id);
+  const token =
+    getToken();
 
 
-  if(error){
+  if (!token) {
 
-    console.error(error);
-
-    showMessage(
-      "Delete failed: " +
-      error.message,
-      true
+    alert(
+      "Your session has expired. Please login again."
     );
 
     return;
   }
 
 
-  showMessage(
-    "Job deleted successfully."
-  );
+  try {
+
+    const response =
+      await fetch(
+        SUPABASE_URL +
+        "/rest/v1/jobs?id=eq." +
+        encodeURIComponent(id),
+        {
+          method: "DELETE",
+
+          headers: {
+            "apikey": SUPABASE_KEY,
+
+            "Authorization":
+              "Bearer " + token,
+
+            "Prefer":
+              "return=minimal"
+          }
+        }
+      );
 
 
-  loadJobs();
-}
+    if (!response.ok) {
 
+      const errorText =
+        await response.text();
 
-/* =========================
-   CANCEL EDIT
-========================= */
+      console.error(
+        errorText
+      );
 
-function cancelEdit(){
-
-  clearForm();
-
-}
-
-
-/* =========================
-   CLEAR FORM
-========================= */
-
-function clearForm(){
-
-  document.getElementById("jobId").value =
-    "";
-
-  document.getElementById("title").value =
-    "";
-
-  document.getElementById("company").value =
-    "Aurelia Global";
-
-  document.getElementById("location").value =
-    "Remote";
-
-  document.getElementById("salary").value =
-    "$500 - $1,000 / 14 days";
-
-  document.getElementById("description").value =
-    "";
-
-  document.getElementById("requirements").value =
-    "";
-
-  document.getElementById("benefits").value =
-    "";
-
-  document.getElementById("apply_link").value =
-    "https://wa.me/62881011654730";
-
-
-  document.getElementById("formTitle").innerText =
-    "Add Job";
-
-  document.getElementById("saveButton").innerText =
-    "Save Job";
-
-  document.getElementById("cancelButton").style.display =
-    "none";
-}
-
-
-/* =========================
-   MESSAGES
-========================= */
-
-function showMessage(
-  text,
-  isError = false
-){
-
-  message.innerText =
-    text;
-
-  message.className =
-    isError
-      ? "error"
-      : "success";
-
-  message.style.display =
-    "block";
-
-  setTimeout(() => {
-
-    message.style.display =
-      "none";
-
-  },5000);
-}
-
-
-function showLoginError(text){
-
-  loginMessage.innerText =
-    text;
-
-  loginMessage.className =
-    "error";
-
-  loginMessage.style.display =
-    "block";
-}
-
-
-/* =========================
-   SECURITY: HTML ESCAPE
-========================= */
-
-function escapeHtml(value){
-
-  return String(value)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-}
-
-
-/* =========================
-   AUTH STATE
-========================= */
-
-supabaseClient.auth.onAuthStateChange(
-  (event, session) => {
-
-    if(session){
-
-      showAdmin();
-
-    }else{
-
-      showLogin();
-
+      throw new Error(
+        "Unable to delete job."
+      );
     }
+
+
+    alert(
+      "Job deleted successfully."
+    );
+
+
+    await loadJobs();
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      error.message ||
+      "Unable to delete job."
+    );
+
+  }
+
+};
+
+
+/* =========================================
+   CANCEL EDIT
+========================================= */
+
+cancelBtn.addEventListener(
+  "click",
+  function() {
+
+    resetForm();
+
+    clearStatus(formStatus);
 
   }
 );
+
+
+/* =========================================
+   RESET FORM
+========================================= */
+
+function resetForm() {
+
+  jobForm.reset();
+
+  document
+    .getElementById("jobId")
+    .value = "";
+
+
+  document
+    .getElementById("work_type")
+    .value = "Remote";
+
+
+  formTitle.textContent =
+    "Add New Job";
+
+
+  saveBtn.textContent =
+    "Publish Job";
+
+
+  cancelBtn.classList.add(
+    "hidden"
+  );
+
+}
+
+
+/* =========================================
+   ESCAPE HTML
+========================================= */
+
+function escapeHTML(value) {
+
+  if (
+    value === null ||
+    value === undefined
+  ) {
+    return "";
+  }
+
+
+  return String(value)
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+}
+
+
+/* =========================================
+   START
+========================================= */
+
+checkExistingLogin();
 
 </script>
 
